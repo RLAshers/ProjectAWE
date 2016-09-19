@@ -5,16 +5,16 @@ namespace AWESystem
 {
     public class GameDirector : Singleton<GameDirector>
     {
-        public GameObject Player { get; set; }
+        public PlayerController Player { get; set; }
 
-        private GameObject _player;
+        private PlayerController _player;
 
         // Use this for initialization
         protected virtual void Start()
         {
             if (Player == null)
             {
-                _player = GameObject.FindGameObjectWithTag("Player");
+                _player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
                 Player = _player;
             }
 
