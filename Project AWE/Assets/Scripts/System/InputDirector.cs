@@ -9,7 +9,10 @@ namespace AWESystem
     {
         private bool _ready = false;
         private PlayerController _player;
-        private Dictionary<string, InputID> _InputDictionary = new Dictionary<string, InputID>();
+
+        //  These variables handle Inputs
+        private List<InputEvent> _StandbyInput = new List<InputEvent>();
+        private Dictionary<string, InputEvent> _InputDictionary = new Dictionary<string, InputEvent>();
 
         protected override void Awake()
         {
@@ -22,7 +25,12 @@ namespace AWESystem
         // Use this for initialization
         protected virtual void Start()
         {
-
+            
+            if (Application.isEditor || Application.platform == RuntimePlatform.WindowsPlayer)
+            {
+                //Cursor.lockState = CursorLockMode.Locked;
+            }
+            
         }
 
         // Update is called once per frame
@@ -42,11 +50,11 @@ namespace AWESystem
                 movement.x = Input.GetAxis("Left Joystick Horizontal");
                 movement.y = Input.GetAxis("Left Joystick Vertical");
 
-                _player.SetMovement(movement);
+                _player.Move(movement);
 
             }
             //  This handles movement via Keyboard
-            else
+            else if (Application.isEditor || Application.platform == RuntimePlatform.WindowsPlayer)
             {
                 Vector2 movement = Vector2.zero;
 
@@ -71,42 +79,98 @@ namespace AWESystem
                     movement.x += 1;
                 }
 
-                _player.SetMovement(movement);
+                _player.Move(movement);
             }
 
             //  This handles orientation via Console
-            if (Application.isConsolePlatform)
+            if ((Input.GetAxis("Right Joystick Horizontal") != 0) ||
+                (Input.GetAxis("Right Joystick Vertical") != 0))
             {
+                Vector2 orientation = Vector2.zero;
+
 
             }
             //  This handles orientation via Mouse
-            else
+            else if (Application.isEditor || Application.platform == RuntimePlatform.WindowsPlayer)
             {
-
-                if (Input.GetKeyDown(KeyCode.D) || Input.GetKey(KeyCode.D))
+                if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
                 {
+                    Vector3 orientation = Vector3.zero;
 
+                    orientation.x = Input.GetAxis("Mouse Y");
+                    orientation.y = Input.GetAxis("Mouse X");
+
+                    _player.Look(orientation);
                 }
             }
 
             //  This handles buttons via Console and Keyboard
             if (Input.GetButtonDown("A Button") || Input.GetButton("A Button"))
             {
-                _player.SkillInput(_InputDictionary["A Button"]);
+                InputEvent input = _InputDictionary["A Button"];
+
+                if (input.CheckState())
+                {
+                    _player.SkillInput(input.GetID("A Button"));
+
+                    if (!input.CheckState())
+                    {
+                        _StandbyInput.Add(input);
+                    }
+                }
             }
             if (Input.GetButtonDown("B Button") || Input.GetButton("B Button"))
             {
-                _player.SkillInput(_InputDictionary["B Button"]);
+                InputEvent input = _InputDictionary["B Button"];
+
+                if (input.CheckState())
+                {
+                    _player.SkillInput(input.GetID("B Button"));
+
+                    if (!input.CheckState())
+                    {
+                        _StandbyInput.Add(input);
+                    }
+                }
             }
             if (Input.GetButtonDown("X Button") || Input.GetButton("X Button"))
             {
-                _player.SkillInput(_InputDictionary["X Button"]);
+                InputEvent input = _InputDictionary["X Button"];
+
+                if (input.CheckState())
+                {
+                    _player.SkillInput(input.GetID("X Button"));
+
+                    if (!input.CheckState())
+                    {
+                        _StandbyInput.Add(input);
+                    }
+                }
             }
             if (Input.GetButtonDown("Y Button") || Input.GetButton("Y Button"))
             {
-                _player.SkillInput(_InputDictionary["Y Button"]);
+                InputEvent input = _InputDictionary["Y Button"];
+
+                if (input.CheckState())
+                {
+                    _player.SkillInput(input.GetID("Y Button"));
+
+                    if (!input.CheckState())
+                    {
+                        _StandbyInput.Add(input);
+                    }
+                }
             }
 
+
+            //  This handles resetting Single Fire Checks
+            foreach (InputEvent input in _StandbyInput)
+            {
+                if (Input.GetButtonUp(input.GetButton()))
+                {
+                    input.Ready();
+                }
+            }
         }
 
         public virtual void SetPlayer(PlayerController aPlayer)
@@ -115,7 +179,7 @@ namespace AWESystem
             _ready = true;
         }
 
-        public virtual void SetInputDictionary(Dictionary<string, InputID> aDictionary)
+        public virtual void SetInputDictionary(Dictionary<string, InputEvent> aDictionary)
         {
             _InputDictionary = aDictionary;
         }
@@ -123,10 +187,12 @@ namespace AWESystem
         protected virtual void InitializeDictionary()
         {
             //  This is the default Input Dictionary
-            _InputDictionary.Add("A Button", InputID.Jump);
-            _InputDictionary.Add("B Button", InputID.Melee);
-            _InputDictionary.Add("X Button", InputID.Defend);
-            _InputDictionary.Add("Y Button", InputID.Range);
+            _InputDictionary.Add("A Button", new InputEvent(InputID.Jump,   ButtonType.Single));
+            _InputDictionary.Add("B Button", new InputEvent(InputID.Melee,  ButtonType.Single));
+            _InputDictionary.Add("X Button", new InputEvent(InputID.Defend, ButtonType.Single));
+            _InputDictionary.Add("Y Button", new InputEvent(InputID.Range,  ButtonType.Single));
         }
+
+
     }
 }

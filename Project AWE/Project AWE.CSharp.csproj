@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\System\EnumLibrary.cs" />
     <Compile Include="Assets\Scripts\System\GameDirector.cs" />
     <Compile Include="Assets\Scripts\System\InputDirector.cs" />
+    <Compile Include="Assets\Scripts\System\InputEvent.cs" />
     <Compile Include="Assets\Scripts\System\Singleton.cs" />
     <Compile Include="Assets\Scripts\System\Toolbox.cs" />
   </ItemGroup>

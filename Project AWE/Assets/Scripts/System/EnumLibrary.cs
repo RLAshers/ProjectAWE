@@ -17,4 +17,10 @@
         Jump        = 3,
         Roll        = 4
     }
+
+    public enum ButtonType
+    {
+        Single      = 0,
+        Multi       = 1
+    }
 }
