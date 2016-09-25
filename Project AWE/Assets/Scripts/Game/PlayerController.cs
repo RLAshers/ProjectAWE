@@ -24,24 +24,43 @@ public class PlayerController : MonoBehaviour {
     {
         if (movement.magnitude > 0)
         {
+            Vector3 strafe = Vector3.zero;
+
             movement *= speed * Time.deltaTime;
-            this.transform.Translate(movement, Space.World);
+
+            this.transform.Translate(movement, this.transform);
 
             movement = Vector3.zero;
         }
 
         if (updateFocus)
         {
-            focus *= Time.deltaTime * accel;
+            //  Makes the head face in the camera direction
+            LookDebug.transform.LookAt(LookDebug.transform.position + focus * 100f);
 
-            this.transform.Rotate(Vector3.left, focus.x, Space.World);
-            this.transform.Rotate(Vector3.up, focus.y, Space.World);
 
-            Camera.main.transform.LookAt(this.transform.position + this.transform.forward * 100f);
-            LookDebug.transform.position = this.transform.position + this.transform.forward * 100f;
+            float temp = LookDebug.transform.eulerAngles.y - this.transform.eulerAngles.y;
 
-            //this.transform.parent.Rotate(focus * Time.deltaTime);
-            //this.transform.parent.Rotate(orientation);
+            Debug.Log(temp);
+
+            if (temp > 180)
+            {
+                temp -= 360;
+            }
+            else if (temp < -180)
+            {
+                temp += 360;
+            }
+
+            temp = Mathf.Clamp(temp, -10, 10);
+
+            if (Mathf.Abs(temp) > 8)
+            {
+                //  Makes the body orient itself
+                Vector3 bodyOrientation = Vector3.zero;
+                bodyOrientation.y += temp * Time.deltaTime * 10f;
+                this.transform.eulerAngles += bodyOrientation;
+            }
 
             updateFocus = false;
         }
@@ -69,7 +88,7 @@ public class PlayerController : MonoBehaviour {
 
     public void Look(Vector3 look)
     {
-        focus = look;
+        focus = Camera.main.transform.forward;
 
         //Camera.main.transform.LookAt(focusTarget.transform.position);
 
