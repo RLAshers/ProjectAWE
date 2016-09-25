@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class Toolbox : Singleton<Toolbox>
 {
     protected Toolbox() { }
-    private static Dictionary<DirectorID, object> _directors = new Dictionary<DirectorID, object>();
+    //private static Dictionary<DirectorID, object> _directors = new Dictionary<DirectorID, object>();
 
     public static Toolbox getInstance()
     {
@@ -16,6 +16,7 @@ public class Toolbox : Singleton<Toolbox>
         return _instance;
     }
     
+    /******************  COMMENTED OUT FOR NOW *************************
     public static void SetDirector(DirectorID aDirector, object aObject)
     {
         if (!_directors.ContainsKey(aDirector))
@@ -41,4 +42,5 @@ public class Toolbox : Singleton<Toolbox>
             _directors.Remove(aDirector);
         }
     }
+    ******************************************************************/
 }
