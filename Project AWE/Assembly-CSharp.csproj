@@ -45,10 +45,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Game\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\Game\SimpleCameraFollow.cs" />
      <Compile Include="Assets\Scripts\Misc\AutoLoad.cs" />
      <Compile Include="Assets\Scripts\System\EnumLibrary.cs" />
      <Compile Include="Assets\Scripts\System\GameDirector.cs" />
      <Compile Include="Assets\Scripts\System\InputDirector.cs" />
+     <Compile Include="Assets\Scripts\System\InputEvent.cs" />
      <Compile Include="Assets\Scripts\System\Singleton.cs" />
      <Compile Include="Assets\Scripts\System\Toolbox.cs" />
      <None Include="Assets\another asset.txt" />
